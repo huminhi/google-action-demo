@@ -25,10 +25,9 @@ const authProvider = require('./auth-provider');
 const config = require('./config-provider');
 
 // Check that the API key was changed from the default
-if (config.smartHomeProviderApiKey === '<API_KEY>') {
+if (!config.smartHomeProviderApiKey) {
   console.warn('You need to set the API key in config-provider.\n' +
     'Visit the Google Cloud Console to generate an API key for your project.\n' +
-    'https://console.cloud.google.com\n' +
     'Exiting...');
   process.exit();
 }
@@ -42,7 +41,7 @@ app.use(session({
   genid: function (req) {
     return authProvider.genRandomString();
   },
-  secret: 'xyzsecret',
+  secret: process.env.APP_SECRET,
   resave: false,
   saveUninitialized: true,
   cookie: {secure: false}
@@ -534,5 +533,5 @@ app._router.stack.forEach(function(r){
   if (r.route && r.route.path){
     console.log(r.route.path);
   }
-})
+});
 
